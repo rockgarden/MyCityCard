@@ -10,4 +10,4 @@
             android:layout_height="match_parent"
             android:id="@+id/webView"
             android:layout_gravity="center_horizontal"/>
-</LinearLayout><!-- From: file:/Users/rockgarden/Documents/Android/MyCityCard/baselib/src/main/res/layout/act_sample.xml -->
+</LinearLayout><!-- From: file:/Users/rockgarden/GitHub/MyCityCard/baselib/src/main/res/layout/act_sample.xml -->

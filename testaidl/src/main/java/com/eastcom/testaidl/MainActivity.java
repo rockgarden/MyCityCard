@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eastcom.mycitycard.IMyAidlInterface;
@@ -23,10 +24,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Intent serviceIntent;
     private EditText textInput;
+    private TextView tv;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        tv=new TextView(this);
+        tv.setText("hello context");
 
         serviceIntent=new Intent();
         serviceIntent.setComponent(new ComponentName("com.eastcom.mycitycard", "com.eastcom.mycitycard.services.AppService"));
@@ -129,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        System.out.println("bind service");
+        System.out.println("service Connected");
         System.out.println(service);
         binder= IMyAidlInterface.Stub.asInterface(service); //传递正确的对象
     }

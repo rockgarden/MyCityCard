@@ -1,6 +1,8 @@
 package com.eastcom.mycitycard;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -20,6 +22,8 @@ import android.widget.TextView;
 import com.eastcom.mycitycard.fragments.cardFragment;
 import com.eastcom.mycitycard.fragments.cardFragmentAdapter;
 import com.eastcom.mycitycard.models.CardInfo;
+import com.eastcom.mycitycard.services.AppService;
+import com.eastcom.mycitycard.services.MyService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +36,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //startService(new Intent(this, AppService.class));
+        startService(new Intent(this, AppService.class));
+        bindService(new Intent(this, MyService.class), (ServiceConnection) this, Context.BIND_AUTO_CREATE);
 
         setContentView(R.layout.activity_main);
         textView= (TextView) findViewById(R.id.textView);
@@ -148,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //stopService(new Intent(this, AppService.class));
+        stopService(new Intent(this, AppService.class));
+        unbindService((ServiceConnection) this);
     }
 }

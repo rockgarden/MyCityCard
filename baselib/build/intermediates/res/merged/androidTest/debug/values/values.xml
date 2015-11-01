@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/Users/rockgarden/Documents/Android/MyCityCard/baselib/build/intermediates/bundles/debug/res/values/values.xml -->
+    <!-- From: file:/Users/rockgarden/GitHub/MyCityCard/baselib/build/intermediates/bundles/debug/res/values/values.xml -->
     <eat-comment/>
     <string name="app_name">LiteCommon</string>
 </resources>
