@@ -14,7 +14,9 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Intent serviceIntent;
     private EditText textInput;
     private TextView tv;
+    private ImageView iv;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +35,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         tv=new TextView(this);
         tv.setText("hello context");
+        iv=new ImageView(this);
+        iv.setImageResource(R.mipmap.ic_launcher);
+        addContentView(iv, new ViewGroup.LayoutParams(-1, -1));
 
         serviceIntent=new Intent();
         serviceIntent.setComponent(new ComponentName("com.eastcom.mycitycard", "com.eastcom.mycitycard.services.AppService"));
@@ -64,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
