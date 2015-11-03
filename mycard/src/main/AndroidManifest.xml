@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
+        android:name=".MycardApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -21,22 +22,12 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
         </activity>
         <activity
-            android:name=".CoordinatorLayoutActivity"
+            android:name=".activitys.CoordinatorLayoutActivity"
             android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="com.eastcom.mycitycard.CoordinatorLayout" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:scheme="app" />
-            </intent-filter>
+            <intent-filter><action android:name="com.eastcom.mycitycard.CoordinatorLayout" /><category android:name="android.intent.category.DEFAULT" /><data android:scheme="app" /></intent-filter>
         </activity>
 
         <service
@@ -46,27 +37,22 @@
         </service>
 
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activitys.SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".MainActivity" >
-            <intent-filter>
-                <action android:name="mycitycard.settings" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-
+            <intent-filter><action android:name="mycitycard.settings" /><category android:name="android.intent.category.DEFAULT" /></intent-filter>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.eastcom.mycitycard.MainActivity" />
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".activitys.LoginActivity"
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize|stateHidden" >
         </activity>
         <activity
-            android:name=".FullscreenActivity"
+            android:name=".activitys.FullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_fullscreen"
             android:theme="@style/FullscreenTheme" >

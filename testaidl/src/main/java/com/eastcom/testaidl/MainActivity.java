@@ -14,9 +14,9 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,12 +32,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        LinearLayout linearLayout=(LinearLayout)findViewById(R.id.mainView);
 
         tv=new TextView(this);
-        tv.setText("hello context");
+        tv.setText(String.format("TaskID:%d\nCurrent Activity:%s", getTaskId(), toString()));
+        linearLayout.addView(tv);
+
         iv=new ImageView(this);
         iv.setImageResource(R.mipmap.ic_launcher);
-        addContentView(iv, new ViewGroup.LayoutParams(-1, -1));
+        linearLayout.addView(iv);
+        //addContentView(iv, new ViewGroup.LayoutParams(-1, -1));
 
         serviceIntent=new Intent();
         serviceIntent.setComponent(new ComponentName("com.eastcom.mycitycard", "com.eastcom.mycitycard.services.AppService"));
@@ -48,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btnUnbindAppService).setOnClickListener(this);
         findViewById(R.id.btnSync).setOnClickListener(this);
         findViewById(R.id.btnStartOtherApp).setOnClickListener(this);
+        findViewById(R.id.btnStartSelf).setOnClickListener(this);
 
         textInput=(EditText)findViewById(R.id.textInput);
         textInput.setHint("请输入数据");
@@ -127,6 +132,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }catch (Exception ex){
                     Toast.makeText(MainActivity.this,"Could not start the specified Activity",Toast.LENGTH_SHORT).show();
                 }
+                break;
+            case R.id.btnStartSelf:
+                startActivity(new Intent(MainActivity.this,MainActivity.class));//选择启动self
                 break;
         }
     }

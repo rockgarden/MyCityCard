@@ -1,8 +1,6 @@
 package com.eastcom.mycitycard;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -19,11 +17,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.eastcom.mycitycard.activitys.CoordinatorLayoutActivity;
+import com.eastcom.mycitycard.activitys.SettingsActivity;
 import com.eastcom.mycitycard.fragments.cardFragment;
 import com.eastcom.mycitycard.fragments.cardFragmentAdapter;
 import com.eastcom.mycitycard.models.CardInfo;
 import com.eastcom.mycitycard.services.AppService;
-import com.eastcom.mycitycard.services.MyService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +36,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         startService(new Intent(this, AppService.class));
-        bindService(new Intent(this, MyService.class), (ServiceConnection) this, Context.BIND_AUTO_CREATE);
+        //bindService(new Intent(this, MyService.class), (ServiceConnection) this, Context.BIND_AUTO_CREATE);
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_drawerlayout);
         textView= (TextView) findViewById(R.id.textView);
 
         final TextInputLayout textInput=(TextInputLayout)findViewById(R.id.textInput);
@@ -117,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         tabs.setTabsFromPagerAdapter(mAdapter);
 
         // TODO: Bug!!Can't drawer out menu
-        DrawerLayout drawerLayout=(DrawerLayout)findViewById(R.id.drawerLayout);
+        DrawerLayout drawerLayout=(DrawerLayout)findViewById(R.id.mainMenu);
         //drawerLayout.openDrawer(Gravity.LEFT);
         //drawerLayout.closeDrawer(Gravity.LEFT);
     }
@@ -154,6 +153,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         stopService(new Intent(this, AppService.class));
-        unbindService((ServiceConnection) this);
+        //unbindService((ServiceConnection) this);
     }
 }

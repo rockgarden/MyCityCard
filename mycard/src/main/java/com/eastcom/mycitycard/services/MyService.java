@@ -30,7 +30,7 @@ public class MyService extends Service {
                 while (running){
                     Log.i(data);
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(10000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
