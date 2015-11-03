@@ -10,13 +10,32 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTop">
-            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+            android:launchMode="singleTop" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".LocalLaunch"
             android:label="@string/title_activity_local_launch" >
-            <intent-filter><category android:name="android.intent.category.BROWSABLE"/><category android:name="android.intent.category.DEFAULT" /><action android:name="android.intent.action.VIEW"/><data android:scheme="app"></data></intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <data android:scheme="app" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".RecyclerActivity"
+            android:label="@string/title_activity_recycler"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.eastcom.testaidl.MainActivity" />
         </activity>
     </application>
 

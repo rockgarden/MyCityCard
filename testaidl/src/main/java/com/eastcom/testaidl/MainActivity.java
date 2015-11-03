@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btnSync).setOnClickListener(this);
         findViewById(R.id.btnStartOtherApp).setOnClickListener(this);
         findViewById(R.id.btnStartSelf).setOnClickListener(this);
+        findViewById(R.id.btnTestRecyclerView).setOnClickListener(this);
 
         textInput=(EditText)findViewById(R.id.textInput);
         textInput.setHint("请输入数据");
@@ -135,6 +136,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btnStartSelf:
                 startActivity(new Intent(MainActivity.this,MainActivity.class));//选择启动self
+                break;
+            case R.id.btnTestRecyclerView:
+                startActivity(new Intent(MainActivity.this,RecyclerActivity.class));
                 break;
         }
     }
