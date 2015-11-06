@@ -1,7 +1,12 @@
 package com.eastcom.mycitycard;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TextInputLayout;
@@ -15,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.eastcom.mycitycard.activitys.CoordinatorLayoutActivity;
@@ -23,6 +29,12 @@ import com.eastcom.mycitycard.fragments.cardFragment;
 import com.eastcom.mycitycard.fragments.cardFragmentAdapter;
 import com.eastcom.mycitycard.models.CardInfo;
 import com.eastcom.mycitycard.services.AppService;
+import com.eastcom.mycitycard.services.MyBindService;
+import com.eastcom.mycitycard.services.MyBindService.MyBinder;
+import com.litesuits.android.log.Log;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +42,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private TextView textView;
+    private ImageLoader loader;
+    private ImageView iv_img;
+
+    MyBindService myBindService;
+    boolean isBound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,10 +132,78 @@ public class MainActivity extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
         tabs.setTabsFromPagerAdapter(mAdapter);
 
-        // TODO: Bug!!Can't drawer out menu
         DrawerLayout drawerLayout=(DrawerLayout)findViewById(R.id.mainMenu);
         //drawerLayout.openDrawer(Gravity.LEFT);
         //drawerLayout.closeDrawer(Gravity.LEFT);
+
+        loader = ImageLoader.getInstance();
+        iv_img = (ImageView) this.findViewById(R.id.iv_img);
+        String uri = "file:///" + "/myCard/imgCache";
+        loader.displayImage(
+                "http://img.zcool.cn/community/05ef61554ace6300000115a891c243.jpg",
+                iv_img, new ImageLoadingListener() {
+                    @Override
+                    public void onLoadingStarted(String arg0, View arg1) {
+                        Log.i("info", "onLoadingStarted");
+                    }
+                    @Override
+                    public void onLoadingFailed(String arg0, View arg1,
+                                                FailReason arg2) {
+                        Log.i("info", "onLoadingFailed");
+                    }
+                    @Override
+                    public void onLoadingComplete(String arg0, View arg1,
+                                                  Bitmap arg2) {
+                        Log.i("info", "onLoadingComplete");
+                    }
+                    @Override
+                    public void onLoadingCancelled(String arg0, View arg1) {
+                        Log.i("info", "onLoadingCancelled");
+                    }
+                });
+
+        /*Picasso example
+        Picasso.with(this)
+                .load("http://img.zcool.cn/community/05ef61554ace6300000115a891c243.jpg")
+                .into(iv_img);
+        Picasso.with(this)
+                .load("http://img.zcool.cn/community/05ef61554ace6300000115a891c243.jpg")
+                .resize(150, 150).into(iv_img);
+        Picasso.with(this)
+                .load("http://img.zcool.cn/community/05ef61554ace6300000115a891c243.jpg")
+                .error(R.mipmap.ic_launcher).into(iv_img);
+                */
+    }
+
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        Intent intent = new Intent();
+        intent.setClass(this, MyBindService.class);
+        bindService(intent, conn, Context.BIND_AUTO_CREATE);
+    }
+
+    private ServiceConnection conn = new ServiceConnection() {
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            // TODO Auto-generated method stub
+            isBound = false;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MyBinder binder = (MyBinder)service;
+            myBindService = binder.getService();
+            isBound = true;
+        }
+    };
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unbindService(conn);
     }
 
     @Override

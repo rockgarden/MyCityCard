@@ -3,6 +3,7 @@ package com.eastcom.testaidl;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
@@ -54,6 +55,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btnStartOtherApp).setOnClickListener(this);
         findViewById(R.id.btnStartSelf).setOnClickListener(this);
         findViewById(R.id.btnTestRecyclerView).setOnClickListener(this);
+        findViewById(R.id.btnSendMessage).setOnClickListener(this);
+        findViewById(R.id.btnRegisterReceiver).setOnClickListener(this);
+        findViewById(R.id.btnCanelReceiver).setOnClickListener(this);
+        findViewById(R.id.btnLoadFragment).setOnClickListener(this);
+        findViewById(R.id.btnStartTabs).setOnClickListener(this);
 
         textInput=(EditText)findViewById(R.id.textInput);
         textInput.setHint("请输入数据");
@@ -140,8 +146,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnTestRecyclerView:
                 startActivity(new Intent(MainActivity.this,RecyclerActivity.class));
                 break;
+            case R.id.btnSendMessage:
+                //Intent intent = new Intent(this,MyReceiver.class);
+                Intent intentA= new Intent(MyReceiver.ACTION);
+                intentA.putExtra("code", "no body");
+                //sendBroadcast(intentA);
+                sendOrderedBroadcast(intentA,null);
+                break;
+            case R.id.btnRegisterReceiver:
+                if(receiver==null){
+                    receiver=new MyReceiver();
+                    registerReceiver(receiver,new IntentFilter(MyReceiver.ACTION));
+                }
+                break;
+            case R.id.btnCanelReceiver:
+                unregisterReceiver(receiver);
+                receiver=null;
+                break;
+            case R.id.btnLoadFragment:
+                startActivity(new Intent(MainActivity.this,FragmentActivity.class));
+                break;
+            case R.id.btnStartTabs:
+                startActivity(new Intent(MainActivity.this,TabsActivity.class));
+                break;
         }
     }
+
+    private MyReceiver receiver=null;
 
     /**
      * Called when a connection to the Service has been established, with

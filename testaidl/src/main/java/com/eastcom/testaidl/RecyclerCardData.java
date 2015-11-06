@@ -21,6 +21,7 @@ public class RecyclerCardData {
         try
         {
             return context.getResources().getIdentifier(this.picName, "drawable", context.getPackageName());
+            //return context.getResources().getDrawable(R.drawable.p1);
 
         }
         catch (Exception e)
@@ -29,4 +30,5 @@ public class RecyclerCardData {
             return -1;
         }
     }
+
 }

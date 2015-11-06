@@ -65,6 +65,9 @@ public class AppService extends Service {
             }
         }.start();
 
+        ServiceThread st = new ServiceThread();
+        st.start();
+        Log.i("onStartCommand...");
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -87,6 +90,24 @@ public class AppService extends Service {
                 }
             }
         }.start();
+    }
+
+    private class ServiceThread extends Thread{
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            super.run();
+            for (int i = 0; i < 5; i++) {
+                Log.i("当前的值：" + i);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            AppService.this.stopSelf();
+        }
     }
 
     @Override

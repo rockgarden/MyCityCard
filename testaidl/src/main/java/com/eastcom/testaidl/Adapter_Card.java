@@ -1,6 +1,8 @@
 package com.eastcom.testaidl;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,6 +59,7 @@ public class Adapter_Card extends RecyclerView.Adapter {
         return new ViewHolder(v);
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBindViewHolder( RecyclerView.ViewHolder holder, int i )
     {
@@ -65,6 +68,7 @@ public class Adapter_Card extends RecyclerView.Adapter {
         RecyclerCardData cardData = cardDatas.get(i);
         viewHolder.getmTextView().setText(cardData.name);
         viewHolder.getmImageView().setImageDrawable(mContext.getResources().getDrawable(cardData.getImageResourceId(mContext)));
+        //viewHolder.getmImageView().setImageDrawable(mContext.getDrawable(R.drawable.p1));
     }
 
     @Override
