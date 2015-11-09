@@ -74,6 +74,12 @@
             android:name=".TabsActivity"
             android:label="@string/title_activity_tabs" >
         </activity>
+
+        <service
+            android:name=".MyService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>

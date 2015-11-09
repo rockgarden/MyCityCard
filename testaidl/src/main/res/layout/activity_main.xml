@@ -10,11 +10,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,11 +47,27 @@
             android:text="unbind AppService" />
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/textInput"
-        android:layout_width="fill_parent"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="send data to MycardAPP" />
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/textInput"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="send data to service" />
+
+        <TextView
+            android:id="@+id/textViewServiceOutput"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="New Text" />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnSync"

@@ -7,7 +7,9 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -25,11 +27,29 @@ import com.eastcom.mycitycard.IMyAidlInterface;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, ServiceConnection {
 
-    private Intent serviceIntent;
     private EditText textInput;
+    private TextView tvServiceOutput;
     private TextView tv;
     private ImageView iv;
-    @Override
+    private Intent appServiceIntent;
+    private Intent myServiceIntent;
+    private MyService.Binder myBinder=null;
+    private IMyAidlInterface appBinder=null;
+    private MyReceiver receiver=null;
+
+    public static void main(){
+        MyThread myThreadA=new MyThread("A");
+        MyThread myThreadB=new MyThread("B");
+        myThreadA.start();//使用run()不用迸发
+        myThreadB.start();
+        MyRunnable myRunnableA=new MyRunnable("A");
+        MyRunnable myRunnableB=new MyRunnable("B");
+        Thread t1=new Thread(myRunnableA);
+        Thread t2=new Thread(myRunnableB);
+        t1.start();
+        t2.start();
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -43,9 +63,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         iv.setImageResource(R.mipmap.ic_launcher);
         linearLayout.addView(iv);
         //addContentView(iv, new ViewGroup.LayoutParams(-1, -1));
-
-        serviceIntent=new Intent();
-        serviceIntent.setComponent(new ComponentName("com.eastcom.mycitycard", "com.eastcom.mycitycard.services.AppService"));
 
         findViewById(R.id.btnStartAppService).setOnClickListener(this);
         findViewById(R.id.btnEndAppService).setOnClickListener(this);
@@ -62,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btnStartTabs).setOnClickListener(this);
 
         textInput=(EditText)findViewById(R.id.textInput);
-        textInput.setHint("请输入数据");
+        textInput.setHint("please input data");
         textInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -72,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 20) {
-                    textInput.setError("数据不能超过20位");
+                    textInput.setError("data length must < 20 ");
                 }
             }
 
@@ -81,6 +98,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
+
+        tvServiceOutput=(TextView)findViewById(R.id.textViewServiceOutput);
+
+        appServiceIntent=new Intent();
+        appServiceIntent.setComponent(new ComponentName("com.eastcom.mycitycard", "com.eastcom.mycitycard.services.AppService"));
+
+        myServiceIntent=new Intent();
+        myServiceIntent.setClass(this, MyService.class);
+        myServiceIntent.putExtra("data", textInput.getText().toString());
     }
 
 
@@ -111,25 +137,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v){
         switch (v.getId()){
             case R.id.btnStartAppService:
-                startService(serviceIntent);
+                startService(appServiceIntent);
+                startService(myServiceIntent);
                 break;
             case R.id.btnEndAppService:
-                stopService(serviceIntent);
+                stopService(appServiceIntent);
+                stopService(myServiceIntent);
                 break;
             case R.id.btnBindAppService:
-                bindService(serviceIntent, this, Context.BIND_AUTO_CREATE);
+                // TODO one activity bind only one service?!
+                //bindService(appServiceIntent, this, Context.BIND_AUTO_CREATE);//appServiceIntent<->appBinder
+                bindService(myServiceIntent, this, Context.BIND_AUTO_CREATE);//myServiceIntent<->myBinder
                 break;
             case R.id.btnUnbindAppService:
                 unbindService(this);
-                binder=null;
+                appBinder=null;
+                myBinder=null;
                 break;
             case R.id.btnSync:
-                if(binder!=null){
+                if(appBinder!=null){
                     try {
-                        binder.setData(textInput.getText().toString());
+                        appBinder.setData(textInput.getText().toString());
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
+                }
+                if(myBinder!=null){
+                    myBinder.setData(textInput.getText().toString());
                 }
                 break;
             case R.id.btnStartOtherApp:
@@ -172,38 +206,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private MyReceiver receiver=null;
-
-    /**
-     * Called when a connection to the Service has been established, with
-     * the {@link IBinder} of the communication channel to the
-     * Service.
-     *
-     * @param name    The concrete component name of the service that has
-     *                been connected.
-     * @param service The IBinder of the Service's communication channel,
-     */
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         System.out.println("service Connected");
         System.out.println(service);
-        binder= IMyAidlInterface.Stub.asInterface(service); //传递正确的对象
+        //appBinder= IMyAidlInterface.Stub.asInterface(service); //传递正确的对象,service只能实例一次
+        myBinder= (MyService.Binder) service;
+        myBinder.getService().setCallback(new MyService.Callback() {
+            @Override
+            public void onDataChange(String data) {
+                Message msg=new Message();
+                Bundle bundle=new Bundle();
+                bundle.putString("data",data);
+                msg.setData(bundle);
+                handler.sendMessage(msg);
+            }
+        });
     }
 
-    /**
-     * Called when a connection to the Service has been lost.  This typically
-     * happens when the process hosting the service has crashed or been killed.
-     * This does <em>not</em> remove the ServiceConnection itself -- this
-     * binding to the service will remain active, and you will receive a call
-     * to {@link #onServiceConnected} when the Service is next running.
-     *
-     * @param name The concrete component name of the service whose
-     *             connection has been lost.
-     */
     @Override
     public void onServiceDisconnected(ComponentName name) {
 
     }
 
-    private IMyAidlInterface binder=null;
+    private Handler handler=new Handler() {
+        @Override
+        public void handleMessage(Message msg){
+            super.handleMessage(msg);
+            tvServiceOutput.setText(msg.getData().getString("data"));
+        }
+    };
+
 }
