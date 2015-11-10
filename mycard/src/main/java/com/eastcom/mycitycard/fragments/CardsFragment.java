@@ -1,7 +1,9 @@
 package com.eastcom.mycitycard.fragments;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -10,7 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.eastcom.mycitycard.R;
+import com.eastcom.mycitycard.activitys.CoordinatorLayoutActivity;
 import com.eastcom.mycitycard.adapters.cardFragmentAdapter;
+import com.eastcom.mycitycard.models.CardInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +76,23 @@ public class CardsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView =inflater.inflate(R.layout.fragment_cards, container, false);
+
+        final FloatingActionButton btn = (FloatingActionButton)rootView.findViewById(R.id.btn);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), CoordinatorLayoutActivity.class);
+
+                Bundle bundle = new Bundle();
+                //bundle.putString("name", "杭州公交卡");
+                //bundle.putString("number", "1111111111111111111");
+                //intent.putExtra("data", bundle);
+                intent.putExtra("cardInfo", new CardInfo("杭州公交卡", "1111111111111111111"));
+
+                //startActivity(intent);
+                startActivityForResult(intent, 0);
+            }
+        });
         ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
 //        TextView txtCard=(TextView) rootView.findViewById(R.id.txtCard);
 //        txtCard.setText(mTitle);

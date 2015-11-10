@@ -60,23 +60,6 @@ public class MainActivity extends AppCompatActivity {
         setupDrawerLayout();
         setupInit();
 
-        final FloatingActionButton btn = (FloatingActionButton) findViewById(R.id.btn);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, CoordinatorLayoutActivity.class);
-
-                Bundle bundle = new Bundle();
-                //bundle.putString("name", "杭州公交卡");
-                //bundle.putString("number", "1111111111111111111");
-                //intent.putExtra("data", bundle);
-                intent.putExtra("cardInfo", new CardInfo("杭州公交卡", "1111111111111111111"));
-
-                //startActivity(intent);
-                startActivityForResult(intent, 0);
-            }
-        });
-
     }
 
     private void setupToolbar() {
@@ -92,10 +75,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupDrawerLayout() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        drawerLayout=(DrawerLayout)findViewById(R.id.mainMenu);
-//        drawerLayout.openDrawer(Gravity.LEFT);
-//        drawerLayout.closeDrawer(Gravity.LEFT);
-//        setupDrawerContent(navigationView);
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -112,8 +91,6 @@ public class MainActivity extends AppCompatActivity {
     private void setupInit() {
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
-
-        drawerLayout.openDrawer(GravityCompat.START);
     }
 
     private void selectDrawerItem(MenuItem menuItem) {
