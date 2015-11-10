@@ -4,46 +4,46 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Bitmap;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Menu;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.eastcom.mycitycard.activitys.CoordinatorLayoutActivity;
-import com.eastcom.mycitycard.activitys.SettingsActivity;
-import com.eastcom.mycitycard.fragments.cardFragment;
-import com.eastcom.mycitycard.fragments.cardFragmentAdapter;
+import com.eastcom.mycitycard.fragments.CardsFragment;
+import com.eastcom.mycitycard.fragments.FundsFragment;
+import com.eastcom.mycitycard.fragments.MainFragment;
+import com.eastcom.mycitycard.fragments.SettingsFragment;
 import com.eastcom.mycitycard.models.CardInfo;
 import com.eastcom.mycitycard.services.AppService;
 import com.eastcom.mycitycard.services.MyBindService;
 import com.eastcom.mycitycard.services.MyBindService.MyBinder;
-import com.litesuits.android.log.Log;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView textView;
-    private ImageLoader loader;
-    private ImageView iv_img;
+    private DrawerLayout drawerLayout;
+    private Toolbar toolbar = null;
+    private ActionBarDrawerToggle drawerToggle;
+    private FragmentManager fragmentManager;
 
     MyBindService myBindService;
     boolean isBound;
@@ -55,35 +55,12 @@ public class MainActivity extends AppCompatActivity {
         startService(new Intent(this, AppService.class));
         //bindService(new Intent(this, MyService.class), (ServiceConnection) this, Context.BIND_AUTO_CREATE);
 
-        setContentView(R.layout.activity_main_drawerlayout);
-        textView= (TextView) findViewById(R.id.textView);
+        setContentView(R.layout.activity_main);
+        setupToolbar();
+        setupDrawerLayout();
+        setupInit();
 
-        final TextInputLayout textInput=(TextInputLayout)findViewById(R.id.textInput);
-        textInput.setHint("请输入用户名");
-        EditText editText=textInput.getEditText();
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 20) {
-                    textInput.setError("用户名不能超过20位");
-                    textInput.setErrorEnabled(true);
-                } else {
-                    textInput.setErrorEnabled(false);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        final FloatingActionButton btn= (FloatingActionButton) findViewById(R.id.btn);
+        final FloatingActionButton btn = (FloatingActionButton) findViewById(R.id.btn);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,79 +77,126 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final FloatingActionButton btnSetting= (FloatingActionButton) findViewById(R.id.btnSetting);
-        btnSetting.setOnClickListener(new View.OnClickListener() {
+    }
+
+    private void setupToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        final ActionBar actionBar = getSupportActionBar();
+
+        if (actionBar != null) {
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    private void setupDrawerLayout() {
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        drawerLayout=(DrawerLayout)findViewById(R.id.mainMenu);
+//        drawerLayout.openDrawer(Gravity.LEFT);
+//        drawerLayout.closeDrawer(Gravity.LEFT);
+//        setupDrawerContent(navigationView);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(SettingsActivity.ACTION);
-                startActivity(intent);
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                selectDrawerItem(menuItem);
+                return true;
             }
         });
 
-        TabLayout tabs=(TabLayout)findViewById(R.id.tabs);
-        tabs.addTab(tabs.newTab().setText("Tab1"));
-        tabs.addTab(tabs.newTab().setText("Tab2"));
-        tabs.addTab(tabs.newTab().setText("Tab3"));
-        tabs.addTab(tabs.newTab().setText("Tab4"));
-        tabs.addTab(tabs.newTab().setText("Tab5"));
-        tabs.addTab(tabs.newTab().setText("Tab6"));
-        List<String> titles=new ArrayList<>();
-        List<Fragment> fragments=new ArrayList<>();
-        for(int i=0;i<6;i++){
-            String title="Tab"+(i+1);
-            tabs.addTab(tabs.newTab().setText(title));
-            titles.add(title);
-            Fragment fragment=cardFragment.newInstance(title,title);
-            fragments.add(fragment);
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
+        drawerLayout.setDrawerListener(drawerToggle);
+    }
+
+    private void setupInit() {
+        fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
+
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    private void selectDrawerItem(MenuItem menuItem) {
+        Fragment fragment = null;
+        Class fragmentClass;
+        Float elevation = getResources().getDimension(R.dimen.elevation_toolbar);
+
+        switch (menuItem.getItemId()) {
+            case R.id.drawer_home:
+                fragmentClass = MainFragment.class;
+                break;
+            case R.id.drawer_favorites:
+                fragmentClass = FundsFragment.class;
+                elevation = 0.0f;
+                break;
+            case R.id.drawer_settings:
+                fragmentClass = SettingsFragment.class;
+                break;
+            case R.id.drawer_cards:
+                fragmentClass = CardsFragment.class;
+                break;
+            default:
+                fragmentClass = MainFragment.class;
+                break;
         }
 
-        ViewPager viewPager=(ViewPager)findViewById(R.id.viewpager);
-        cardFragmentAdapter mAdapter=new cardFragmentAdapter(getSupportFragmentManager(),titles,fragments);
-        viewPager.setAdapter(mAdapter);
-        tabs.setupWithViewPager(viewPager);
-        tabs.setTabsFromPagerAdapter(mAdapter);
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
 
-        DrawerLayout drawerLayout=(DrawerLayout)findViewById(R.id.mainMenu);
-        //drawerLayout.openDrawer(Gravity.LEFT);
-        //drawerLayout.closeDrawer(Gravity.LEFT);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        loader = ImageLoader.getInstance();
-        iv_img = (ImageView) this.findViewById(R.id.iv_img);
-        String uri = "file:///" + "/myCard/imgCache";
-        loader.displayImage(
-                "http://img.zcool.cn/community/05ef61554ace6300000115a891c243.jpg",
-                iv_img, new ImageLoadingListener() {
-                    @Override
-                    public void onLoadingStarted(String arg0, View arg1) {
-                        Log.i("info", "onLoadingStarted");
-                    }
-                    @Override
-                    public void onLoadingFailed(String arg0, View arg1,
-                                                FailReason arg2) {
-                        Log.i("info", "onLoadingFailed");
-                    }
-                    @Override
-                    public void onLoadingComplete(String arg0, View arg1,
-                                                  Bitmap arg2) {
-                        Log.i("info", "onLoadingComplete");
-                    }
-                    @Override
-                    public void onLoadingCancelled(String arg0, View arg1) {
-                        Log.i("info", "onLoadingCancelled");
-                    }
-                });
+        fragmentTransaction.replace(R.id.content_frame, fragment);
+        fragmentTransaction.addToBackStack("FRAGMENT");
+        fragmentTransaction.commit();
 
-        /*Picasso example
-        Picasso.with(this)
-                .load("http://img.zcool.cn/community/05ef61554ace6300000115a891c243.jpg")
-                .into(iv_img);
-        Picasso.with(this)
-                .load("http://img.zcool.cn/community/05ef61554ace6300000115a891c243.jpg")
-                .resize(150, 150).into(iv_img);
-        Picasso.with(this)
-                .load("http://img.zcool.cn/community/05ef61554ace6300000115a891c243.jpg")
-                .error(R.mipmap.ic_launcher).into(iv_img);
-                */
+        menuItem.setChecked(true);
+        setTitle(menuItem.getTitle());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            toolbar.setElevation(elevation);
+
+        drawerLayout.closeDrawers();
+    }
+
+//    private void setupDrawerContent(NavigationView navigationView) {
+//        navigationView.setNavigationItemSelectedListener(
+//                new NavigationView.OnNavigationItemSelectedListener() {
+//                    @Override
+//                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+//                        menuItem.setChecked(true);
+//                        drawerLayout.closeDrawers();
+//                        return true;
+//                    }
+//                });
+//    }
+
+    public void showSnackbarMessage(View v) {
+
+        final TextInputLayout textInputLayout = (TextInputLayout) findViewById(R.id.textInputLayout);
+        textInputLayout.setHint("请输入用户名");
+        EditText et_snackbar = (EditText) findViewById(R.id.et_snackbar);
+        View view = findViewById(R.id.coordinator_layout);
+        if (et_snackbar.getText().toString().isEmpty()) {
+            textInputLayout.setError(getString(R.string.alert_text));
+        } else {
+            textInputLayout.setErrorEnabled(false);
+            et_snackbar.onEditorAction(EditorInfo.IME_ACTION_DONE);
+            Snackbar.make(view, et_snackbar.getText().toString(), Snackbar.LENGTH_LONG)
+                    .setAction(getResources().getString(android.R.string.ok), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // Do nothing
+                        }
+                    })
+                    .show();
+        }
+
     }
 
     @Override
@@ -194,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            MyBinder binder = (MyBinder)service;
+            MyBinder binder = (MyBinder) service;
             myBindService = binder.getService();
             isBound = true;
         }
@@ -207,31 +231,44 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode,int resultCode,Intent data){
-        super.onActivityResult(requestCode,resultCode,data);
-        textView.setText("用户确认"+data.getStringExtra("data"));
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        textView.setText("用户确认" + data.getStringExtra("data"));
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_drawer, menu);
+//        return true;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+        return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+    }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
+    }
 
-        return super.onOptionsItemSelected(item);
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override

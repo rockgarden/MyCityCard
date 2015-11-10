@@ -47,7 +47,27 @@ public class CoordinatorLayoutActivity extends AppCompatActivity {
         textInput.setHint("请输入确认信息");
         final EditText editText=textInput.getEditText();
         editText.setText(((MycardApplication)getApplicationContext()).getTextData());
-
+//        editText.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                if (s.length() > 20) {
+//                    textInput.setError("用户名不能超过20位");
+//                    textInput.setErrorEnabled(true);
+//                } else {
+//                    textInput.setErrorEnabled(false);
+//                }
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//            }
+//        });
         findViewById(R.id.btnConfirm).setOnClickListener(new View.OnClickListener() {
             /**
              * Called when a view has been clicked.
