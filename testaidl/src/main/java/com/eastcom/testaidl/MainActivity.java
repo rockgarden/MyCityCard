@@ -23,7 +23,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.eastcom.mycitycard.IMyAidlInterface;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, ServiceConnection {
 
@@ -236,5 +247,107 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             tvServiceOutput.setText(msg.getData().getString("data"));
         }
     };
+
+    private void volley_Post() {
+        String url = "http://apis.juhe.cn/mobile/get?";
+        StringRequest request = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String arg0) {
+                        Toast.makeText(MainActivity.this, arg0,
+                                Toast.LENGTH_LONG).show();
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError arg0) {
+                Toast.makeText(MainActivity.this, "网络请求失败",
+                        Toast.LENGTH_LONG).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> map = new HashMap<String, String>();
+                map.put("phone", "13666666666");
+                map.put("key", "335adcc4e891ba4e4be6d7534fd54c5d");
+                return map;
+            }
+        };
+        request.setTag("abcPost");
+        TestaidlApplication.getHttpQueue().add(request);
+    }
+
+    private void volley_Get() {
+        String url = "http://apis.juhe.cn/mobile/get?phone=13666666666&key=335adcc4e891ba4e4be6d7534fd54c5d";
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String arg0) {
+                        Toast.makeText(MainActivity.this, arg0,
+                                Toast.LENGTH_LONG).show();
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError arg0) {
+                Toast.makeText(MainActivity.this, "网络请求失败",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+        request.setTag("abcGet");
+        TestaidlApplication.getHttpQueue().add(request);
+    }
+
+    private void asynchttpPost() {
+        String url = "http://apis.juhe.cn/mobile/get?";
+        RequestParams params = new RequestParams();
+        params.put("phone", "13666666666");
+        params.put("key", "335adcc4e891ba4e4be6d7534fd54c5d");
+        RequestUtils.ClientPost(url, params, new NetCallBack() {
+
+            @Override
+            public void onMySuccess(String result) {
+                Toast.makeText(MainActivity.this, result, Toast.LENGTH_LONG)
+                        .show();
+            }
+
+            @Override
+            public void onMyFailure(Throwable arg0) {
+                Toast.makeText(MainActivity.this, "请求失败", Toast.LENGTH_LONG)
+                        .show();
+            }
+        });
+    }
+
+    private void asynchttpGet() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = "http://apis.juhe.cn/mobile/get?phone=13666666666&key=335adcc4e891ba4e4be6d7534fd54c5d";
+        client.get(url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(String arg0) {
+                // TODO Auto-generated method stub
+                super.onSuccess(arg0);
+                Toast.makeText(MainActivity.this, arg0, Toast.LENGTH_LONG)
+                        .show();
+            }
+
+            @Override
+            public void onFailure(Throwable arg0) {
+                Toast.makeText(MainActivity.this, "网络请求失败", Toast.LENGTH_LONG)
+                        .show();
+                super.onFailure(arg0);
+            }
+        });
+    }
+
+    @Override
+    protected void onStop() {
+        // TODO Auto-generated method stub
+        super.onStop();
+        TestaidlApplication.getHttpQueue().cancelAll("abcPost");
+        TestaidlApplication.getHttpQueue().cancelAll("abcGet");
+    }
 
 }
