@@ -4,20 +4,18 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
 import com.eastcom.mycitycard.R;
 
 /**
- * A login screen that offers login via email/password and via Google+ sign in.
- * <p/>
- * ************ IMPORTANT SETUP NOTES: ************
- * In order for Google+ sign in to work with your app, you must first go to:
- * https://developers.google.com/+/mobile/android/getting-started#step_1_enable_the_google_api
- * and follow the steps in "Step 1" to create an OAuth 2.0 client for your package.
+ * Created by rockgarden on 15/11/16.
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
@@ -59,6 +57,28 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         return;
     }
 
+    public void showSnackbarMessage(View v) {
+
+        final TextInputLayout textInputLayout = (TextInputLayout) findViewById(R.id.textInputLayout);
+        textInputLayout.setHint("请输入用户名");
+        EditText et_snackbar = (EditText) findViewById(R.id.et_UserName);
+        View view = findViewById(R.id.coordinator_layout);
+        if (et_snackbar.getText().toString().isEmpty()) {
+            textInputLayout.setError(getString(R.string.alert_text));
+        } else {
+            textInputLayout.setErrorEnabled(false);
+            et_snackbar.onEditorAction(EditorInfo.IME_ACTION_DONE);
+            Snackbar.make(view, et_snackbar.getText().toString(), Snackbar.LENGTH_LONG)
+                    .setAction(getResources().getString(android.R.string.ok), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // Do nothing
+                        }
+                    })
+                    .show();
+        }
+
+    }
 
     private void populateAutoComplete() {
         getLoaderManager().initLoader(0, null, this);

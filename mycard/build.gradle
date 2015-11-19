@@ -38,5 +38,4 @@ dependencies {
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.jakewharton.timber:timber:2.5.1'
     compile 'com.facebook.rebound:rebound:0.3.6'
-    compile 'com.commonsware.cwac:camera:0.6.12'
 }

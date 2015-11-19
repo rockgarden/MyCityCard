@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:headerLayout="@layout/drawer_hearder"
-        app:menu="@menu/menu_drawer" />
+        app:headerLayout="@layout/drawerlayout_hearder"
+        app:menu="@menu/menu_drawerlayout" />
 
 </android.support.v4.widget.DrawerLayout>

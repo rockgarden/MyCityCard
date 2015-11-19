@@ -1,23 +1,33 @@
 package com.litesuits.common.utils;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Point;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.SystemClock;
+import android.view.Display;
+import android.view.WindowManager;
+
 import com.litesuits.android.log.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * 手机信息 & MAC地址 & 开机时间
+ * 手机信息 & MAC地址 & 开机时间 & 屏幕信息
  *
  * @author MaTianyu
  * @date 2014-09-25
+ * @modify Wang Kan
+ * @date 2015-11-18
  */
+
 public class AndroidUtil {
     private static final String TAG = AndroidUtil.class.getSimpleName();
+    private static int screenWidth = 0;
+    private static int screenHeight = 0;
 
     /**
      * 获取 MAC 地址
@@ -93,5 +103,49 @@ public class AndroidUtil {
         }
         Log.i(TAG, sb.toString());
         return sb.toString();
+    }
+
+    public static int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    /**
+     * 获取屏幕高度
+     *
+     * @param c
+     * @return
+     */
+    public static int getScreenHeight(Context c) {
+        if (screenHeight == 0) {
+            WindowManager wm = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            screenHeight = size.y;
+        }
+
+        return screenHeight;
+    }
+
+    /**
+     * 获取屏幕宽度
+     *
+     * @param c
+     * @return
+     */
+    public static int getScreenWidth(Context c) {
+        if (screenWidth == 0) {
+            WindowManager wm = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            screenWidth = size.x;
+        }
+
+        return screenWidth;
+    }
+
+    public static boolean isAndroid5() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 }

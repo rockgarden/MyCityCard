@@ -29,9 +29,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.eastcom.mycitycard.IMyAidlInterface;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -300,47 +297,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TestaidlApplication.getHttpQueue().add(request);
     }
 
-    private void asynchttpPost() {
-        String url = "http://apis.juhe.cn/mobile/get?";
-        RequestParams params = new RequestParams();
-        params.put("phone", "13666666666");
-        params.put("key", "335adcc4e891ba4e4be6d7534fd54c5d");
-        RequestUtils.ClientPost(url, params, new NetCallBack() {
+//    private void asynchttpPost() {
+//        String url = "http://apis.juhe.cn/mobile/get?";
+//        RequestParams params = new RequestParams();
+//        params.put("phone", "13666666666");
+//        params.put("key", "335adcc4e891ba4e4be6d7534fd54c5d");
+//        RequestUtils.ClientPost(url, params, new NetCallBack() {
+//
+//            @Override
+//            public void onMySuccess(String result) {
+//                Toast.makeText(MainActivity.this, result, Toast.LENGTH_LONG)
+//                        .show();
+//            }
+//
+//            @Override
+//            public void onMyFailure(Throwable arg0) {
+//                Toast.makeText(MainActivity.this, "请求失败", Toast.LENGTH_LONG)
+//                        .show();
+//            }
+//        });
+//    }
 
-            @Override
-            public void onMySuccess(String result) {
-                Toast.makeText(MainActivity.this, result, Toast.LENGTH_LONG)
-                        .show();
-            }
-
-            @Override
-            public void onMyFailure(Throwable arg0) {
-                Toast.makeText(MainActivity.this, "请求失败", Toast.LENGTH_LONG)
-                        .show();
-            }
-        });
-    }
-
-    private void asynchttpGet() {
-        AsyncHttpClient client = new AsyncHttpClient();
-        String url = "http://apis.juhe.cn/mobile/get?phone=13666666666&key=335adcc4e891ba4e4be6d7534fd54c5d";
-        client.get(url, new AsyncHttpResponseHandler() {
-            @Override
-            public void onSuccess(String arg0) {
-                // TODO Auto-generated method stub
-                super.onSuccess(arg0);
-                Toast.makeText(MainActivity.this, arg0, Toast.LENGTH_LONG)
-                        .show();
-            }
-
-            @Override
-            public void onFailure(Throwable arg0) {
-                Toast.makeText(MainActivity.this, "网络请求失败", Toast.LENGTH_LONG)
-                        .show();
-                super.onFailure(arg0);
-            }
-        });
-    }
+//    private void asynchttpGet() {
+//        AsyncHttpClient client = new AsyncHttpClient();
+//        String url = "http://apis.juhe.cn/mobile/get?phone=13666666666&key=335adcc4e891ba4e4be6d7534fd54c5d";
+//        client.get(url, new AsyncHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(String arg0) {
+//                // TODO Auto-generated method stub
+//                super.onSuccess(arg0);
+//                Toast.makeText(MainActivity.this, arg0, Toast.LENGTH_LONG)
+//                        .show();
+//            }
+//
+//            @Override
+//            public void onFailure(Throwable arg0) {
+//                Toast.makeText(MainActivity.this, "网络请求失败", Toast.LENGTH_LONG)
+//                        .show();
+//                super.onFailure(arg0);
+//            }
+//        });
+//    }
 
     @Override
     protected void onStop() {

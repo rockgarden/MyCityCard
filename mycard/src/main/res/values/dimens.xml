@@ -17,7 +17,7 @@
 
     <dimen name="spacing_large">16dp</dimen>
     <dimen name="status_bar_height">25dp</dimen>
-    <dimen name="header_layout_height">172dp</dimen>
+    <dimen name="header_drawerlayout_height">120dp</dimen>
     <dimen name="avatar_size">64dp</dimen>
 
     <dimen name="title_start_margin">48dp</dimen>
@@ -26,4 +26,13 @@
     <dimen name="scrollview_margin">24dp</dimen>
     <dimen name="card_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="btn_fab_size">56dp</dimen>
+    <dimen name="btn_fab_margins">16dp</dimen>
+    <dimen name="default_elevation">8dp</dimen>
+    <dimen name="comment_size">56dp</dimen>
+    <dimen name="user_profile_size">88dp</dimen>
+    <dimen name="head_size">88dp</dimen>
+    <dimen name="global_menu_size">64dp</dimen>
+    <dimen name="publish_photo_thumbnail_size">96dp</dimen>
 </resources>

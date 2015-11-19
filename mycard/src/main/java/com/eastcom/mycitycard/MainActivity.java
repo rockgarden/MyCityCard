@@ -8,36 +8,27 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import com.eastcom.mycitycard.activitys.CoordinatorLayoutActivity;
+import com.eastcom.mycitycard.activitys.BaseDrawerActivity;
 import com.eastcom.mycitycard.fragments.CardsFragment;
 import com.eastcom.mycitycard.fragments.FundsFragment;
 import com.eastcom.mycitycard.fragments.MainFragment;
 import com.eastcom.mycitycard.fragments.SettingsFragment;
-import com.eastcom.mycitycard.models.CardInfo;
 import com.eastcom.mycitycard.services.AppService;
 import com.eastcom.mycitycard.services.MyBindService;
 import com.eastcom.mycitycard.services.MyBindService.MyBinder;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseDrawerActivity {
 
     private TextView textView;
     private DrawerLayout drawerLayout;
@@ -52,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        startService(new Intent(this, AppService.class));
         //bindService(new Intent(this, MyService.class), (ServiceConnection) this, Context.BIND_AUTO_CREATE);
 
         setContentView(R.layout.activity_main);
@@ -62,13 +52,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setupToolbar() {
+    @Override
+    public void setupToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null) {
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
@@ -153,28 +144,7 @@ public class MainActivity extends AppCompatActivity {
 //                });
 //    }
 
-    public void showSnackbarMessage(View v) {
 
-        final TextInputLayout textInputLayout = (TextInputLayout) findViewById(R.id.textInputLayout);
-        textInputLayout.setHint("请输入用户名");
-        EditText et_snackbar = (EditText) findViewById(R.id.et_snackbar);
-        View view = findViewById(R.id.coordinator_layout);
-        if (et_snackbar.getText().toString().isEmpty()) {
-            textInputLayout.setError(getString(R.string.alert_text));
-        } else {
-            textInputLayout.setErrorEnabled(false);
-            et_snackbar.onEditorAction(EditorInfo.IME_ACTION_DONE);
-            Snackbar.make(view, et_snackbar.getText().toString(), Snackbar.LENGTH_LONG)
-                    .setAction(getResources().getString(android.R.string.ok), new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            // Do nothing
-                        }
-                    })
-                    .show();
-        }
-
-    }
 
     @Override
     protected void onStart() {
@@ -216,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_drawer, menu);
+//        getMenuInflater().inflate(R.menu.menu_drawerlayout, menu);
 //        return true;
 //    }
 

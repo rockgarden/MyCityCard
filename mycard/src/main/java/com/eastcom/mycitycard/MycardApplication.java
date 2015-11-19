@@ -2,6 +2,7 @@ package com.eastcom.mycitycard;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 
+import com.eastcom.mycitycard.services.AppService;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
@@ -76,6 +78,7 @@ public class MycardApplication extends Application {
     public void onCreate() {
         super.onCreate();
         //Thread.setDefaultUncaughtExceptionHandler((Thread.UncaughtExceptionHandler) this);
+        startService(new Intent(this, AppService.class));
         configUniversalImageLoader();
     }
 

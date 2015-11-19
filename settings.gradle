@@ -1,1 +1,1 @@
-include ':mycard', ':baselib', ':testaidl'
+include ':mycard', ':baselib', ':testaidl', ':myapplication'
